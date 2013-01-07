@@ -9,7 +9,25 @@ let numbers = [1 .. 999];
 let r1 = List.filter (fun x -> x % 3 = 0 || x % 5 = 0) numbers
 
 // sum up numbers
-let r2 = List.sum r1
+let answer1 = List.sum r1
 
-// print result
-printfn "sum: %A" r2
+// print answer
+printfn "sum: %A" answer1
+
+
+// Eulers 2
+
+// calculates the value of the item in the Fibonacci seq at the given position
+let rec Fib(n) = 
+    if (n < 2) then
+        1
+    else
+        Fib(n-2) + Fib(n-1)
+
+let FibSeq = Seq.unfold (fun (a, b) -> Some( a, (b, a + b) ) ) (1, 2)
+
+let answer2 = 
+    FibSeq
+        |> Seq.filter (fun x -> x % 2 = 0)
+        |> Seq.takeWhile (fun x -> x <= 4000000)
+        |> Seq.sum
