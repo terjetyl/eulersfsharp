@@ -1,2 +1,4 @@
 eulersfsharp
 ============
+
+Learning F#
