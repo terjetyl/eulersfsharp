@@ -31,3 +31,20 @@ let answer2 =
         |> Seq.filter (fun x -> x % 2 = 0)
         |> Seq.takeWhile (fun x -> x <= 4000000)
         |> Seq.sum
+
+
+// Eulers 6
+let numbers6 = [1..100];
+
+let square = fun x -> x * x
+
+// list with the square of the first 100 numbers
+let list = List.map square numbers6
+
+let sumofsquares = List.sum list
+
+let summednumbers = List.sum numbers6
+
+let answer = square(summednumbers) - sumofsquares
+
+printfn "%A" answer
