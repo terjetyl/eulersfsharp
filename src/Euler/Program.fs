@@ -1,5 +1,10 @@
 ﻿// Learn more about F# at http://fsharp.net
 
+module Primes = 
+    let rec sieve = function
+        | (p::xs) -> p :: sieve [ for x in xs do if x % p > 0 then yield x ]
+        | []      -> []
+
 module Eulers1 = 
 
     // create the list of nubers from 1 to 1000
@@ -50,3 +55,8 @@ module Eulers6 =
     let answer = square(summednumbers) - sumofsquares
 
     printfn "Eulers 6 : %A" answer
+
+module Eulers10 = 
+    let numbers = Primes.sieve [2..1999999];
+    let answer = List.sum numbers
+    printfn "Eulers 10 : %A" answer
