@@ -1,9 +1,15 @@
 ﻿// Learn more about F# at http://fsharp.net
 
 module Primes = 
-    let rec sieve = function
-        | (p::xs) -> p :: sieve [ for x in xs do if x % p > 0 then yield x ]
-        | []      -> []
+    let sieve_primes top_number = 
+        let numbers = [ yield 2L
+                        for i in 3L..2L..top_number -> i ]
+        let rec sieve ns = 
+            match ns with
+            | [] -> []
+            | x::xs when x*x > top_number -> ns
+            | x::xs -> x::sieve (List.filter(fun y -> y%x <> 0L) xs)
+        sieve numbers 
 
 module Eulers1 = 
 
@@ -39,6 +45,10 @@ module Eulers2 =
 
     printfn "Eulers 2 : %A" answer
 
+module Eulers3 = 
+    let numbers = Primes.sieve_primes 600851475143L
+    let answer = numbers.Tail
+    printfn "Eulers 3 : %A" answer
 
 module Eulers6 = 
     let numbers = [1..100];
@@ -57,6 +67,31 @@ module Eulers6 =
     printfn "Eulers 6 : %A" answer
 
 module Eulers10 = 
-    let numbers = Primes.sieve [2..1999999];
+    let numbers = Primes.sieve_primes 1999999L
     let answer = List.sum numbers
     printfn "Eulers 10 : %A" answer
+
+module Eulers14 = 
+    let oddfn = fun x -> x * 3 + 1;
+    let evenfn = fun x -> x / 2;
+
+    let mutable start = 13
+    let mutable continueLooping = true
+
+    let run startnumber = 
+        
+        start <- startnumber
+
+        while continueLooping do
+            if start % 2 = 0 then 
+                start <- evenfn(start)
+                printfn "%A" start
+            else 
+                start <- oddfn(start)
+                printfn "%A" start
+
+            if start < 2 then
+                continueLooping <- false
+
+
+        
