@@ -1,6 +1,10 @@
 ﻿// Learn more about F# at http://fsharp.net
+module Program
 
-module Primes = 
+open Xunit
+open FsUnit.Xunit
+
+module public Primes = 
     let sieve_primes top_number = 
         let numbers = [ yield 2L
                         for i in 3L..2L..top_number -> i ]
@@ -10,6 +14,10 @@ module Primes =
             | x::xs when x*x > top_number -> ns
             | x::xs -> x::sieve (List.filter(fun y -> y%x <> 0L) xs)
         sieve numbers 
+
+    [<Fact>]
+    let ``sum of 5 first numbers in sieve should be 28`` () =
+        List.sum (sieve_primes 12L) |> should equal 28L
 
 module Eulers1 = 
 
@@ -70,6 +78,14 @@ module Eulers10 =
     let numbers = Primes.sieve_primes 1999999L
     let answer = List.sum numbers
     printfn "Eulers 10 : %A" answer
+
+module Eulers12 = 
+    let factors number = seq {
+        for divisor in 1 .. (float >> sqrt >> int) number do
+        if number % divisor = 0 then
+            yield divisor
+            yield number / divisor
+    }
 
 module Eulers14 = 
     let oddfn = fun x -> x * 3 + 1;
