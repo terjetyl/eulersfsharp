@@ -95,8 +95,28 @@ module Eulers4 =
         Array.Reverse(teArr) //in-place reversal better performance than Array.rev
         String.Join("", teArr)
 
-    let isPalidrome (x) = 
+    let isPalindrome (x) = 
         x.ToString() = rev(x)
+
+    let palindrome_numbers = seq {
+        for i in 100 .. 999 do
+            for j in 100 .. 999 do
+                if isPalindrome(Convert.ToString(i*j)) then yield (i*j) }
+
+module Eulers5 = 
+    let isDivisableByNumbers arr x = 
+        arr 
+        |> List.exists (fun d -> x % d <> 0)
+        |> not
+
+    let smallestNumberDivisibleByAll dividers =
+        let max = dividers |> List.max
+        Seq.initInfinite ((+) 1 >> (*) max)
+        |> Seq.find (isDivisableByNumbers dividers)
+            
+    let answer = smallestNumberDivisibleByAll [1..20]
+                
+            
 
 
 module Eulers6 = 
