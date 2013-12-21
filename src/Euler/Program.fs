@@ -17,6 +17,16 @@ module public Primes =
             | x::xs -> x::sieve (List.filter(fun y -> y%x <> 0L) xs)
         sieve numbers 
 
+    let isPrime (possiblePrime:int64) =
+        let sqrRootOfPrime = int64(System.Math.Sqrt(float(possiblePrime)))
+             
+        {1L .. sqrRootOfPrime}
+        |> Seq.forall(fun divisor -> 
+            match divisor with
+            | 1L -> true
+            | x when divisor = possiblePrime -> true
+            | _ -> possiblePrime % divisor > 0L)
+
     [<Fact>]
     let ``sum of 5 first numbers in sieve should be 28`` () =
         List.sum (sieve_primes 12L) |> should equal 28L
@@ -115,25 +125,19 @@ module Eulers5 =
         |> Seq.find (isDivisableByNumbers dividers)
             
     let answer = smallestNumberDivisibleByAll [1..20]
-                
-            
-
-
+          
 module Eulers6 = 
-    let numbers = [1..100];
-
-    let square = fun x -> x * x
-
-    // list with the square of the first 100 numbers
-    let list = List.map square numbers
-
-    let sumofsquares = List.sum list
-
-    let summednumbers = List.sum numbers
-
-    let answer = square(summednumbers) - sumofsquares
+    let square x = x * x
+    let answer = ([1..100] |> Seq.sum |> square) - ([1..100] |> List.map square |> Seq.sum)
 
     printfn "Eulers 6 : %A" answer
+
+module Eulers7 =
+    let answer = 
+        Seq.initInfinite (fun n -> int64 n + 1L) 
+        |> Seq.filter Primes.isPrime 
+        |> Seq.take 10002 
+        |> Seq.max
 
 module Eulers10 = 
     let numbers = Primes.sieve_primes 1999999L
