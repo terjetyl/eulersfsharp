@@ -319,4 +319,10 @@ module Eulers14 =
     let getLength arr = Seq.length arr
 
     let answer = {1..999999} |> Seq.map collatz |> Seq.map getLength |> Seq.max
+
+module Eulers15 = 
+    let fact n = {1I..n} |> Seq.reduce (*)
+ 
+    let answer =
+        fact 40I / ((fact 20I) * (fact 20I))
         
