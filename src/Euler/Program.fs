@@ -312,26 +312,11 @@ module Eulers14 =
         else
             oddfn(x)
 
-    let collatzNumbers = seq {
-        
-    }
+    let collatz startnum =
+        startnum
+        |> Seq.unfold(fun x -> if (x<>1) then Some(x,getNextCollatz(x)) else None)
 
-    let collatz = Seq.takeWhile 
+    let getLength arr = Seq.length arr
 
-    let run startnumber = 
-        
-        start <- startnumber
-
-        while continueLooping do
-            if start % 2 = 0 then 
-                start <- evenfn(start)
-                printfn "%A" start
-            else 
-                start <- oddfn(start)
-                printfn "%A" start
-
-            if start < 2 then
-                continueLooping <- false
-
-
+    let answer = {1..999999} |> Seq.map collatz |> Seq.map getLength |> Seq.max
         
