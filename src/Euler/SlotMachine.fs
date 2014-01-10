@@ -31,6 +31,7 @@ module SlotMachine =
         let b = shuffledList.[rand.Next(0, slotCol.Length)]
         let c = shuffledList.[rand.Next(0, slotCol.Length)]
         let result = (a, b, c)
+        printf "%A" result
         match result with
             | (slotType.Grape, slotType.Grape, slotType.Grape) -> 3
             | (slotType.Apple, slotType.Apple, slotType.Apple) -> 6
