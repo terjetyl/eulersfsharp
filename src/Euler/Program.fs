@@ -294,12 +294,12 @@ module Eulers13 =
         20849603980134001723930671666823555245252804609722\n\
         53503534226472524250874054075591789781264330331690"
 
-        let sum =
-            allNumbers.Split [|'\n'|]
-            |> Array.map (fun s -> BigInteger.Parse(s))
-            |> Array.sum
+    let sum =
+        allNumbers.Split [|'\n'|]
+        |> Array.map (fun s -> BigInteger.Parse(s))
+        |> Array.sum
 
-        let answer = sum.ToString().Substring(0, 10)
+    let answer = sum.ToString().Substring(0, 10)
 
 
 module Eulers14 = 

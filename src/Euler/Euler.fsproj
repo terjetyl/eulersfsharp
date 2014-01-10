@@ -61,9 +61,20 @@
     <Compile Include="BowlingGame.fs" />
     <Compile Include="Sudoku.fs" />
     <Compile Include="SlotMachine.fs" />
+    <Compile Include="TicTacToe.fs" />
+    <Compile Include="MovieCounter.fs" />
+    <None Include="MovieScript.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\FSharp.Data.1.1.10\lib\net40\FSharp.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.Data.DesignTime">
+      <HintPath>..\packages\FSharp.Data.1.1.10\lib\net40\FSharp.Data.DesignTime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FsUnit.CustomMatchers">
@@ -75,13 +86,20 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="MSDN.FSharpChart">
+      <HintPath>..\packages\MSDN.FSharpChart.dll.0.60\lib\MSDN.FSharpChart.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NHamcrest">
       <HintPath>..\packages\FsUnit.xUnit.1.2.1.2\lib\Net40\NHamcrest.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="xunit">
       <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
       <Private>True</Private>

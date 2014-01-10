@@ -1,6 +1,8 @@
-﻿open System
+﻿namespace Slots
 
 module SlotMachine = 
+
+    open System
 
     type slotType = 
         | Grape

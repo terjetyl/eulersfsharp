@@ -1,4 +1,6 @@
-﻿module Sudoku =
+﻿namespace Terje
+
+module Sudoku =
     // Input puzzle
     let sudokuPuzzle = array2D [[0;0;0;0;6;0;4;0;0];
                                 [0;5;0;0;0;3;6;0;0];
