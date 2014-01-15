@@ -34,26 +34,28 @@ let loadHtml (url) =
             printfn "%s failed: %s" url ex.Message
             String.Empty
 
+let loadHtmlAsync (url) = 
+    printfn "parsing %s" url
+    url |> Http.AsyncRequest
+
 let addBaseUrl (partial:string) =
     if partial.IndexOf "http://www.moviebodycounts.com/" > -1 then
         partial
     else
         "http://www.moviebodycounts.com/" + partial
 
-let findMovieLinks url = 
-    printfn "parsing %s" url
-    let html = loadHtml url
-    if html = "" then
-        Seq.empty
-    else
-        let doc = html |> createDoc
-        let links = doc.SelectNodes("//img[@src='graphic-movies.jpg']/following::a/@href")
-        links 
-        |> Seq.map (fun x -> x.Attributes.["href"].Value)
-        |> Seq.map (fun x -> x.Replace("&amp;", "%26"))
+let findMovieLinks html = 
+    let doc = html |> createDoc
+    let links = doc.SelectNodes("//img[@src='graphic-movies.jpg']/following::a/@href")
+    links 
+    |> Seq.map (fun x -> x.Attributes.["href"].Value)
+    |> Seq.map (fun x -> x.Replace("&amp;", "%26"))
 
 let findAllMovieLinks () =
     getUrlToAllIndexPages() 
+    |> Seq.map loadHtmlAsync
+    |> Async.Parallel
+    |> Async.RunSynchronously
     |> Seq.map findMovieLinks // get links to all movies pages
     |> Seq.concat // put all links into one array
     |> Seq.filter (fun x -> x <> "movies-C.htm") // remove invalid link
@@ -90,7 +92,9 @@ let parseMovie html =
 
 let parseMovies() = 
     findAllMovieLinks()
-    |> Seq.map loadHtml
+    |> Seq.map loadHtmlAsync
+    |> Async.Parallel
+    |> Async.RunSynchronously
     |> Seq.map parseMovie
     
 let writeMoviesToFile() = 
