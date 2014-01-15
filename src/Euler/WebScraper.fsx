@@ -15,91 +15,86 @@ open HtmlAgilityPack.FSharp
 
 let getUrlToAllIndexPages() = 
     let lettersAndNumbers = 
-        {'A'..'Z'}
+        {'R'..'Z'}
+        |> Seq.append {'A'..'P'}
         |> Seq.map (fun x -> match x with | 'X' -> 'x' | 'V' -> 'v' | _ -> x) // lowercase only x and v
-        |> Seq.append {'0'..'9'}
-
     let urls = 
         lettersAndNumbers 
         |> Seq.map (fun x -> "http://www.moviebodycounts.com/movies-" + string x + ".htm")
-
+        |> Seq.append [ "http://www.moviebodycounts.com/movies-numbers.htm" ]
     urls
 
-let getLink htmlLink = 
-    Regex.Match(htmlLink, @"href=""(.*?)""").Groups.[1].Value
+let loadHtml (url) = 
+    try
+        url 
+        |> Http.AsyncRequest 
+        |> Async.RunSynchronously
+    with
+        | ex -> 
+            printfn "%s failed: %s" url ex.Message
+            String.Empty
 
 let addBaseUrl (partial:string) =
-    if partial.IndexOf "http://www.moviebodycounts.com/" > 1 then
+    if partial.IndexOf "http://www.moviebodycounts.com/" > -1 then
         partial
     else
         "http://www.moviebodycounts.com/" + partial
 
-let scrapeLink url = 
-    async {
-        try
-            use wc = new WebClient()
-            let! html = wc.AsyncDownloadString(Uri(url))
-            let matchCollection = Regex.Matches(html, @"(<a.*?>.*?</a>)")
-            return matchCollection 
-                |> Seq.cast 
-                |> Seq.map (fun (c:Match) -> c.Groups.[1].Value)
-        with error -> 
-            printfn "failed to get %s, %A" url error 
-            return Seq.empty
-    }
-    |> Async.RunSynchronously
+let findMovieLinks url = 
+    printfn "parsing %s" url
+    let html = loadHtml url
+    if html = "" then
+        Seq.empty
+    else
+        let doc = html |> createDoc
+        let links = doc.SelectNodes("//img[@src='graphic-movies.jpg']/following::a/@href")
+        links 
+        |> Seq.map (fun x -> x.Attributes.["href"].Value)
+        |> Seq.map (fun x -> x.Replace("&amp;", "%26"))
 
-let scrapeAllMovieLinks () =
+let findAllMovieLinks () =
     getUrlToAllIndexPages() 
-    |> Seq.map scrapeLink // get links to all movies pages
-    |> Seq.concat // put all links in one array
-    |> Seq.map (fun x -> getLink x) // parse out only the href part
-    |> Seq.filter (fun x -> x <> @"contact.htm") // remove contact pages
+    |> Seq.map findMovieLinks // get links to all movies pages
+    |> Seq.concat // put all links into one array
+    |> Seq.filter (fun x -> x <> "movies-C.htm") // remove invalid link
     |> Seq.map (fun x -> addBaseUrl x) // add base url if it does not exist
     |> Seq.toList
-
-let loadHtml (url) = 
-    url |> Http.AsyncRequest |> Async.RunSynchronously
-
-let getNode html xpath = 
-    let doc = html |> createDoc
-    doc.SelectNodes(xpath).First()
-
-let getTitle html = 
-    let node = getNode html "//title"
-    node.InnerText.Replace("Movie Body Counts: ", "")
-
-let getKills html = 
-    let node = getNode html "//img[@src='graphic-bc.jpg']/following::text()[normalize-space()]"
-    let a = Regex.Replace(node.InnerText, "\\(.*?\\)", "")
-    Regex.Replace(node.InnerText, "[^0-9]+", "")
-
-let getYear html = 
-    let node = getNode html "//a[contains(@href, 'charts-year')]"
-    node.InnerText
-
-let getImdbUrl html = 
-    let node = getNode html "//a/@href[contains(.,'imdb')]"
-    node.Attributes.["href"].Value
 
 // define a movie object as a record type
 type Movie = { Name : string; Year : string; Kills : string; ImdbUrl : string }
 
 let parseMovie html = 
+    let getNode html xpath = 
+        let doc = html |> createDoc
+        doc.SelectNodes(xpath).First()
+    let getTitle html = 
+        let node = getNode html "//title"
+        node.InnerText.Replace(System.Environment.NewLine, "").Replace("Movie Body Counts: ", "")
+    let getKills html = 
+        let node = getNode html "//img[@src='graphic-bc.jpg']/following::text()[normalize-space()]"
+        let a = Regex.Replace(node.InnerText, "\\(.*?\\)", "")
+        Regex.Replace(node.InnerText, "[^0-9]+", "")
+    let getYear html = 
+        let node = getNode html "//a[contains(@href, 'charts-year')]"
+        node.InnerText
+    let getImdbUrl html = 
+        let node = getNode html "//a/@href[contains(.,'imdb')]"
+        node.Attributes.["href"].Value
     let title = getTitle html
+    printfn "parsing %s" title
     let kills = getKills html
     let year = getYear html
     let imdb = getImdbUrl html
-
     let movie = { Name = title; Year = year; Kills = kills; ImdbUrl = imdb }
     movie
 
 let parseMovies() = 
-    scrapeAllMovieLinks()
+    findAllMovieLinks()
     |> Seq.map loadHtml
     |> Seq.map parseMovie
     
 let writeMoviesToFile() = 
+    printfn "Starting at: %s" (DateTime.Now.ToString())
     let movies = parseMovies()
     let outFile = new StreamWriter("c:\\tmp\\Test.csv")
     outFile.WriteLine("IMDB_URL, Film, Year, Body_Count")
@@ -107,3 +102,4 @@ let writeMoviesToFile() =
     |> Seq.iter (fun l -> outFile.WriteLine(sprintf "%s, %s, %s, %s" l.ImdbUrl l.Name l.Year l.Kills))
     outFile.Flush()
     outFile.Close()
+    printfn "Finished at: %s" (DateTime.Now.ToString())
