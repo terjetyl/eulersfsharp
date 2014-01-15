@@ -13,14 +13,17 @@ open System.IO
 open HtmlAgilityPack
 open HtmlAgilityPack.FSharp
 
-let lettersAndNumbers = 
-    {'A'..'Z'}
-    |> Seq.map (fun x -> match x with | 'X' -> 'x' | 'V' -> 'v' | _ -> x) 
-    |> Seq.append {'0'..'9'}
+let getUrlToAllIndexPages() = 
+    let lettersAndNumbers = 
+        {'A'..'Z'}
+        |> Seq.map (fun x -> match x with | 'X' -> 'x' | 'V' -> 'v' | _ -> x) // lowercase only x and v
+        |> Seq.append {'0'..'9'}
 
-let urls = 
-    lettersAndNumbers 
-    |> Seq.map (fun x -> "http://www.moviebodycounts.com/movies-" + string x + ".htm")
+    let urls = 
+        lettersAndNumbers 
+        |> Seq.map (fun x -> "http://www.moviebodycounts.com/movies-" + string x + ".htm")
+
+    urls
 
 let getLink htmlLink = 
     Regex.Match(htmlLink, @"href=""(.*?)""").Groups.[1].Value
@@ -47,7 +50,7 @@ let scrapeLink url =
     |> Async.RunSynchronously
 
 let scrapeAllMovieLinks () =
-    urls 
+    getUrlToAllIndexPages() 
     |> Seq.map scrapeLink // get links to all movies pages
     |> Seq.concat // put all links in one array
     |> Seq.map (fun x -> getLink x) // parse out only the href part
