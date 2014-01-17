@@ -1,16 +1,36 @@
 ﻿namespace Terje
 
 module Sudoku =
-    // Input puzzle
-    let puzzle = array2D [[0;0;0;0;6;0;4;0;0];
-                          [0;5;0;0;0;3;6;0;0];
-                          [1;0;0;0;0;5;0;0;0];
-                          [0;4;1;0;0;0;0;0;0];
-                          [0;9;0;0;0;0;0;2;0];
-                          [5;0;2;0;0;0;3;4;0];
-                          [3;0;0;7;0;0;0;0;0];
-                          [0;0;6;5;0;0;0;9;0];
-                          [0;0;4;0;1;0;0;0;0];]
+
+    let easypuzzle = array2D [[0;0;4;1;3;0;0;0;2];
+                          [1;9;0;6;0;2;0;0;0];
+                          [3;0;0;0;4;0;9;0;0];
+                          [8;0;0;0;6;0;0;9;4];
+                          [2;0;3;9;0;1;6;0;5];
+                          [9;7;0;0;2;0;0;0;3];
+                          [0;0;8;0;9;0;0;0;1];
+                          [0;0;0;8;0;6;0;2;7];
+                          [4;0;0;0;5;3;8;0;0];]
+
+    let mediumpuzzle = array2D [[0;0;6;2;0;0;0;3;7];
+                                [0;0;9;0;0;0;0;2;0];
+                                [7;0;8;0;9;0;0;6;0];
+                                [6;0;5;1;2;0;0;0;0];
+                                [0;4;0;0;5;0;0;9;0];
+                                [0;0;0;0;4;7;6;0;1];
+                                [0;3;0;0;1;0;2;0;6];
+                                [0;6;0;0;0;0;5;0;0];
+                                [5;7;0;0;0;9;3;0;0];]
+
+    let evilpuzzle = array2D [[0;0;8;0;5;0;0;0;0];
+                              [9;0;0;0;0;0;0;7;0];
+                              [0;0;1;0;3;2;0;0;4];
+                              [0;9;0;0;0;5;0;0;6];
+                              [0;4;0;0;7;0;0;2;0];
+                              [5;0;0;1;0;0;0;9;0];
+                              [7;0;0;6;8;0;5;0;0];
+                              [0;1;0;0;0;0;0;0;3];
+                              [0;0;0;0;4;0;7;0;0];]
 
     let getCol index (matrix:_[,]) =
         matrix.[*,index]
@@ -49,7 +69,7 @@ module Sudoku =
     type Pos = { X:int; Y:int }
     type SudokuVal = { Pos: Pos; Value: int }
 
-    let solve (puzzle:_[,]) = 
+    let rec solve (puzzle:_[,]) = 
         let findPossibles x y v = 
             if v > 0 then // already has value
                 Set.empty
@@ -57,7 +77,6 @@ module Sudoku =
         let matrixOfPossibilities = 
             puzzle 
             |> Array2D.mapi findPossibles
-
         let findNumbersThatAppearsOnlyOnceInArrayOfPossibilities arrayOfArrays =
             let uniqueNumbers =
                 arrayOfArrays 
@@ -69,7 +88,6 @@ module Sudoku =
             let findIndexOfArray x = 
                 arrayOfArrays |> Seq.findIndex (fun array -> Seq.exists (fun y -> y = x) array)
             uniqueNumbers |> Seq.map (fun x -> ((findIndexOfArray x), x))
-
         let checkColsForUniquePossibilities() = 
             [0..8] 
             |> Seq.map (fun x -> findNumbersThatAppearsOnlyOnceInArrayOfPossibilities (getCol x matrixOfPossibilities))
@@ -77,7 +95,6 @@ module Sudoku =
             |> Seq.filter (fun x -> Seq.length (snd x) > 0) // filter out empty lists
             |> Seq.map (fun x -> (fst x, Seq.head (snd x))) // we dont need to keep the record in a seq
             |> Seq.map (fun x -> { Pos = { X = fst x; Y = fst (snd x) }; Value = snd (snd x) }) // finally set up the records as needed
-
         let checkRowsForUniquePossibilities() = 
             [0..8] 
             |> Seq.map (fun x -> findNumbersThatAppearsOnlyOnceInArrayOfPossibilities (getRow x matrixOfPossibilities))
@@ -85,7 +102,6 @@ module Sudoku =
             |> Seq.filter (fun x -> Seq.length (snd x) > 0) // filter out empty lists
             |> Seq.map (fun x -> (fst x, Seq.head (snd x))) // we dont need to keep the record in a seq
             |> Seq.map (fun x -> { Pos = { Y = fst x; X = fst (snd x) }; Value = snd (snd x) }) // finally set up the records as needed
-
         let checkSquaresForUniquePossibilities() = 
             let getCoords (squareIndex, arrayIndex) = 
                 let x = (squareIndex % 3 * 3) + (arrayIndex % 3)
@@ -104,14 +120,24 @@ module Sudoku =
             |> Seq.filter (fun x -> Seq.length (snd x) > 0) // filter out empty lists
             |> Seq.map (fun x -> (fst x, Seq.head (snd x))) // we dont need to keep the record in a seq
             |> Seq.map getFinalRecord // finally set up the records as needed
-
         let findValues () = 
             checkColsForUniquePossibilities()
             |> Seq.append (checkRowsForUniquePossibilities())
             |> Seq.append (checkSquaresForUniquePossibilities())
-
-        let foundValues = findValues()
-        foundValues |> List.iter
+        let setField s = 
+            puzzle.[s.Pos.Y, s.Pos.X] <- s.Value
+        findValues() |> Seq.iter setField
+        let isSolved p =
+            let flatten (matrix:'a[,]) = matrix |> Seq.cast<'a> |> Seq.toArray
+            let array = flatten p
+            if Seq.exists (fun x -> x = 0) array then
+                false
+            else true
+        if isSolved puzzle then
+            printfn "%A" puzzle
+        else 
+            solve puzzle
+            printfn "iter"
 
         
 
