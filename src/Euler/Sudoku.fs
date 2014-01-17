@@ -126,18 +126,24 @@ module Sudoku =
             |> Seq.append (checkSquaresForUniquePossibilities())
         let setField s = 
             puzzle.[s.Pos.Y, s.Pos.X] <- s.Value
-        findValues() |> Seq.iter setField
         let isSolved p =
             let flatten (matrix:'a[,]) = matrix |> Seq.cast<'a> |> Seq.toArray
             let array = flatten p
             if Seq.exists (fun x -> x = 0) array then
                 false
             else true
-        if isSolved puzzle then
+        let newValues = findValues()
+        if Seq.length newValues = 0 then
+            printfn "Could not find a solution"
             printfn "%A" puzzle
-        else 
-            solve puzzle
-            printfn "iter"
+        else
+            newValues 
+            |> Seq.iter setField
+            if isSolved puzzle then
+                printfn "%A" puzzle
+            else 
+                solve puzzle
+                printfn "iter"
 
         
 
