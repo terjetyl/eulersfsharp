@@ -77,6 +77,9 @@ module Sudoku =
         let matrixOfPossibilities = 
             puzzle 
             |> Array2D.mapi findPossibles
+        // if any has only a single possibility set to puzzle and start over again
+        matrixOfPossibilities
+        |> Array2D.iteri (fun x y v -> if Seq.length v = 1 then puzzle.[x, y] <- Seq.head v)
         let findNumbersThatAppearsOnlyOnceInArrayOfPossibilities arrayOfArrays =
             let uniqueNumbers =
                 arrayOfArrays 
@@ -136,6 +139,7 @@ module Sudoku =
         if Seq.length newValues = 0 then
             printfn "Could not find a solution"
             printfn "%A" puzzle
+            printfn "%A" matrixOfPossibilities
         else
             newValues 
             |> Seq.iter setField
