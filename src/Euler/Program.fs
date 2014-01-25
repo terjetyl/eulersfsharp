@@ -326,3 +326,32 @@ module Eulers15 =
     let answer =
         fact 40I / ((fact 20I) * (fact 20I))
         
+module Eulers16 = 
+    let answer = (2I**1000).ToString().ToCharArray() |> Seq.map (fun x -> int (x.ToString())) |> Seq.sum;;
+    
+module Eulers19 = 
+    let dates = DateTime(1901,1,1) |> Seq.unfold (fun d -> Some(d, d.AddDays 1.0)) |> Seq.takeWhile (fun d -> d <= DateTime(2000, 12, 31))
+    let answer = dates |> Seq.filter (fun x -> x.Day = 1 && x.DayOfWeek = DayOfWeek.Sunday) |> Seq.length
+
+module Eulers20 = 
+    let num = [1I..100I] |> Seq.reduce (*)
+    let answer = num.ToString().ToCharArray() |> Seq.map (fun x -> int (x.ToString())) |> Seq.sum
+
+module Eulers21 = 
+    let sumOfDivisors num = [1..num/2] |> List.filter (fun y -> num%y = 0) |> List.sum
+    let isAmicable num = 
+        let sum = sumOfDivisors num
+        num = sumOfDivisors sum && sum <> num
+    let answer = [1..9999] |> List.filter isAmicable |> List.sum
+
+module Eulers22 = 
+    let line = readLines @"c:\tmp\names.txt" |> Seq.head
+    let names = line.Split(',') |> Seq.map (fun x -> x.Trim('"'))
+    let findAlphabeticValue (name:string) = 
+        name.ToCharArray() 
+        |> Seq.map (fun y -> (Seq.findIndex (fun x -> x = y) ['A'..'Z']) + 1)
+        |> Seq.sum
+    let answer = 
+        names 
+        |> Seq.mapi (fun i x -> (i+1)*findAlphabeticValue(x))
+        |> Seq.sum
