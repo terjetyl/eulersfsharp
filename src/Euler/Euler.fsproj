@@ -66,6 +66,8 @@
     <None Include="MovieScript.fsx" />
     <None Include="WebScraper.fsx" />
     <Compile Include="HtmlAgilityPack.FSharp.fs" />
+    <None Include="ECommerce.fsx" />
+    <None Include="LittleTrader.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -81,11 +83,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="FsUnit.CustomMatchers">
-      <HintPath>..\packages\FsUnit.xUnit.1.2.1.2\lib\Net40\FsUnit.CustomMatchers.dll</HintPath>
+      <HintPath>..\packages\FsUnit.xUnit.1.2.2.1\Lib\net40\FsUnit.CustomMatchers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FsUnit.Xunit">
-      <HintPath>..\packages\FsUnit.xUnit.1.2.1.2\lib\Net40\FsUnit.Xunit.dll</HintPath>
+      <HintPath>..\packages\FsUnit.xUnit.1.2.2.1\Lib\net40\FsUnit.Xunit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack">
@@ -111,7 +113,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NHamcrest">
-      <HintPath>..\packages\FsUnit.xUnit.1.2.1.2\lib\Net40\NHamcrest.dll</HintPath>
+      <HintPath>..\packages\FsUnit.xUnit.1.2.2.1\Lib\net40\NHamcrest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\packages\RavenDB.Client.2.5.2750\lib\net45\Raven.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight">
+      <HintPath>..\packages\RavenDB.Client.2.5.2750\lib\net45\Raven.Client.Lightweight.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ScrapySharp">
@@ -123,6 +133,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -135,7 +146,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

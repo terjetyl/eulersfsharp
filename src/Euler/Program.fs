@@ -352,6 +352,19 @@ module Eulers22 =
         |> Seq.map (fun y -> (Seq.findIndex (fun x -> x = y) ['A'..'Z']) + 1)
         |> Seq.sum
     let answer = 
-        names 
+        names
+        |> Seq.sort 
         |> Seq.mapi (fun i x -> (i+1)*findAlphabeticValue(x))
         |> Seq.sum
+
+module Eulers25 = 
+    let FibSeq = Seq.unfold (fun (a, b) -> Some( a, (b, a + b) ) ) (1, 2)
+    let rec last = function
+        | hd :: [] -> hd
+        | hd :: tl -> last tl
+        | _ -> failwith "Empty list."
+    let answer = 
+        FibSeq
+            |> Seq.takeWhile (fun x -> x.ToString().ToCharArray().Length <= 1000)
+            |> Seq.toList
+            |> last
