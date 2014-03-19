@@ -58,20 +58,22 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <Compile Include="BowlingGame.fs" />
-    <Compile Include="Sudoku.fs" />
-    <Compile Include="SlotMachine.fs" />
-    <Compile Include="TicTacToe.fs" />
-    <Compile Include="MovieCounter.fs" />
+    <None Include="BowlingGame.fsx" />
+    <None Include="Sudoku.fsx" />
+    <None Include="SlotMachine.fsx" />
+    <None Include="TicTacToe.fsx" />
+    <None Include="MovieCounter.fsx" />
     <None Include="MovieScript.fsx" />
     <None Include="WebScraper.fsx" />
     <Compile Include="HtmlAgilityPack.FSharp.fs" />
     <None Include="ECommerce.fsx" />
     <None Include="LittleTrader.fsx" />
+    <None Include="Flappy.fsx" />
+    <None Include="Eulers.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
-      <HintPath>..\packages\ScrapySharp.2.2.63\lib\net40\FSharp.Core.dll</HintPath>
+      <HintPath>..\packages\FSharp.Core.3.0.0.2\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Data">
@@ -114,6 +116,10 @@
     </Reference>
     <Reference Include="NHamcrest">
       <HintPath>..\packages\FsUnit.xUnit.1.2.2.1\Lib\net40\NHamcrest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="policy.2.3.FSharp.Core">
+      <HintPath>..\packages\FSharp.Core.3.0.0.2\lib\net40\policy.2.3.FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Abstractions">
