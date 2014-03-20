@@ -70,6 +70,7 @@
     <None Include="LittleTrader.fsx" />
     <None Include="Flappy.fsx" />
     <None Include="Eulers.fsx" />
+    <None Include="ImdbScraper.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
