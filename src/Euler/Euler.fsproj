@@ -71,6 +71,7 @@
     <None Include="Flappy.fsx" />
     <None Include="Eulers.fsx" />
     <None Include="ImdbScraper.fsx" />
+    <None Include="Swarm3.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -156,6 +157,13 @@
       <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Quandl.NET\Quandl.NET.csproj">
+      <Name>Quandl.NET</Name>
+      <Project>{fd307aa6-c11c-4465-8a2b-4a47e95453ee}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.
